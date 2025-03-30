@@ -1,22 +1,28 @@
 
+import catalystImageWrapper from '@zcatalyst/nextjs-plugin/dist/adapters/image-function-wrapper';
+import catalystImageLoader from '@zcatalyst/nextjs-plugin/dist/adapters/image-loader';
+import catalystIncrementalCache from  "@zcatalyst/nextjs-plugin/dist/adapters/incremental-cache";
+import catalystTagCache from '@zcatalyst/nextjs-plugin/dist/adapters/tag-cache';
+import catalystWrapper from '@zcatalyst/nextjs-plugin/dist/adapters/wrapper';
+
 const buildConfig = {
   default: {
     override: {
       converter: 'node',
-      wrapper: async () => (await import('@zcatalyst/nextjs-plugin/dist/adapters/wrapper.js')).default,
-      incrementalCache: async () => (await import('@zcatalyst/nextjs-plugin/dist/adapters/incremental-cache.js')).default,
-      tagCache: async () => (await import('@zcatalyst/nextjs-plugin/dist/adapters/tag-cache.js')).default,
+      wrapper: async () => catalystWrapper,
+      incrementalCache: async () => catalystIncrementalCache,
+      tagCache: async () => catalystTagCache,
       queue:"direct"
     },
   },
   imageOptimization: {
-    loader: async () => (await import('@zcatalyst/nextjs-plugin/dist/adapters/image-loader.js')).default,
+    loader: async () => catalystImageLoader,
     override:{
       converter: 'node',
-      wrapper: async () => (await import('@zcatalyst/nextjs-plugin/dist/adapters/image-function-wrapper.js')).default,
+      wrapper: async () => catalystImageWrapper
     }
   },
   buildCommand: process.env.ZC_BUILD_COMMAND ?? "npm run build"
 };
 
-module.exports = buildConfig;
+export default buildConfig;
